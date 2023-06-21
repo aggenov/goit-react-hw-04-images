@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { fetchImages } from "api/fetchImages";
-import { Dna } from "react-loader-spinner";
 import { Notify } from "notiflix";
+import { createPortal } from "react-dom";
 
 import { Searchbar } from "../Searchbar/Searchbar";
 import { ImageGallery } from "../ImageGallery/ImageGallery";
 import { Button } from "../Button/Button";
+import { Loader } from "../Loader/Loader";
 
 import { Body } from "./App.styled";
 
@@ -17,7 +18,7 @@ export const App = () => {
   const [ images, setImages ] = useState([]);
   const [ page, setPage ] = useState(1);
   const [ loading, setLoading ] = useState(false);
-  const [ isLoadMoreShown, setIsLoadMoreShown ] = useState(false);
+  const [total, setTotal] = useState(null);
  
   useEffect(() => {
 
@@ -29,12 +30,12 @@ export const App = () => {
     const getImages = async () => {
 
       try {
-        // показываем лоадер, прячем кнопку Load more
+        // показываем лоадер
         setLoading(true);
-        setIsLoadMoreShown(false);
 
         //массив найденных картинок
-        const searchImages = await fetchImages( searchName, page );
+        const searchImages = await fetchImages(searchName, page);
+        setTotal (searchImages.totalHits)
 
         //если картинок нет - сообщаем
         if (searchImages.length === 0) {
@@ -43,12 +44,8 @@ export const App = () => {
           );
         };
         // добавляем найденные картинки в стейт
-        setImages(prev => [ ...prev, ...searchImages ])
+        setImages(prev => [ ...prev, ...searchImages.hits ])
           
-        //если картинок больше 12 - объявляем видимость кнопки Load more
-        if (searchImages.length >= 12) {
-          setIsLoadMoreShown(true);
-        };
         //когда есть ошибка при загрузке
       } catch (error) {
         Notify.failure('Something went wrong');
@@ -74,22 +71,13 @@ export const App = () => {
     setPage( prev => prev + 1 );
   };
 
+  const totalPage = total / images.length;
     return (
       <Body>
           <Searchbar onSubmit = { handleFormSubmit }/>
-          { !!images.length && (<ImageGallery images = { images } />) }
-          { loading && (
-            <Dna
-              visible={true}
-              height="60"
-              width="60"
-              ariaLabel="dna-loading"
-              wrapperStyle={{  margin: '0 auto' }}
-              wrapperClass="dna-wrapper"
-          />
-          )}                        
-        
-          { isLoadMoreShown && <Button onClick = { loadMoreSubmit }/>}
+          { images.length!==0 && (<ImageGallery images = { images } />) }
+          { totalPage > 1 && !loading && images.length > 0 && <Button onClick={loadMoreSubmit} /> }
+          { loading && createPortal( <Loader />,  document.getElementById('loader-root')) }  
       </Body>
     );
 };

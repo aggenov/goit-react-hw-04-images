@@ -1,4 +1,6 @@
 import { useState } from "react";
+import PropTypes from 'prop-types';
+import { createPortal } from "react-dom";
 
 import { Modal } from "components/Modal/Modal";
 
@@ -14,10 +16,17 @@ export  const ImageGalleryItem = ({ webformatURL, largeImageURL, tags }) => {
     return(
       <ListItem className="gallery-item">
         <GalleryImage src = { webformatURL } alt = { tags } onClick = { toggleModal }/>
-        {showModal && (
+        { showModal && createPortal(
           <Modal onClose={toggleModal}>
-            <img src={largeImageURL} alt={tags} />
-          </Modal>)}
+              <img src={largeImageURL} alt={tags} />
+          </Modal>,
+            document.getElementById('modal-root')) }
       </ListItem>
     )
 };
+
+ImageGalleryItem.propTypes = {
+  webformatURL: PropTypes.string.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
+  tags:PropTypes.string.isRequired,
+}

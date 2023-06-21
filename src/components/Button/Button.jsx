@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 
 import { ButtonWraper, LoadMoreBtn } from "./Button.styled";
 
@@ -10,4 +11,9 @@ export  const Button = ({onClick}) => {
         </LoadMoreBtn>
     </ButtonWraper>
   )
+};
+
+
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired,
 };

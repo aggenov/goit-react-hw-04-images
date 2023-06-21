@@ -1,5 +1,6 @@
 import { Notify } from "notiflix";
 import { useState } from "react";
+import PropTypes from 'prop-types';
 
 import { SearchbarWrap, Form, SearchFormBtn, SearchFormBtnLabel, SearchInput } from "./Searchbar.styled";
 
@@ -57,3 +58,7 @@ export  const Searchbar = ({onSubmit}) => {
       </SearchbarWrap>
     )
 };
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+}

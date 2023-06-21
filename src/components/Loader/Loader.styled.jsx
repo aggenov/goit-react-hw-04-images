@@ -9,15 +9,6 @@ export const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(255, 255, 255, 0.6);
   z-index: 1200;
-`
-
-export const ModalWinow = styled.div`
-position: absolute;
-top: 50%;
-transform: translateY(-62%);
-max-width: calc(100vw - 48px);
-max-height: calc(100vh - 180px);
-padding: auto;
-`
+  `
